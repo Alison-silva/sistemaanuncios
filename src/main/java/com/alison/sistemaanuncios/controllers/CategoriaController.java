@@ -6,13 +6,14 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
 @Controller
-public class AnuncioController {
+public class CategoriaController {
 
-    @RequestMapping(method = RequestMethod.GET, value = "/")
-    public ModelAndView index() {
-        ModelAndView model = new ModelAndView("index");
 
-        return model;
+    @RequestMapping(method = RequestMethod.GET, value = "categoria")
+    public String index() {
+
+
+        return "categoria";
     }
 
 }
