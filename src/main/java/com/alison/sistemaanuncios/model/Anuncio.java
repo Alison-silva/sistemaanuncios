@@ -43,6 +43,9 @@ public class Anuncio implements Serializable {
     @NotNull(message = "Preço não pode ser nulo!")
     private BigDecimal preco = BigDecimal.ZERO;
 
+    @ManyToOne
+    private Usuario usuario;
+
     public Long getId() {
         return id;
     }
