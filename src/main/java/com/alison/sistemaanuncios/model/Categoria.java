@@ -16,7 +16,7 @@ public class Categoria implements Serializable {
 
     @NotEmpty(message = "A categoria não pode ser vazia!")
     @NotNull(message = "A categoria não pode ser nula!")
-    private String categoria;
+    private String nomecategoria;
 
     public Long getId() {
         return id;
@@ -26,11 +26,11 @@ public class Categoria implements Serializable {
         this.id = id;
     }
 
-    public String getCategoria() {
-        return categoria;
+    public String getNomecategoria() {
+        return nomecategoria;
     }
 
-    public void setCategoria(String categoria) {
-        this.categoria = categoria;
+    public void setNomecategoria(String nomecategoria) {
+        this.nomecategoria = nomecategoria;
     }
 }
