@@ -95,6 +95,14 @@ public class Usuario implements UserDetails {
         this.senha = senha;
     }
 
+    public List<Anuncio> getAnuncios() {
+        return anuncios;
+    }
+
+    public void setAnuncios(List<Anuncio> anuncios) {
+        this.anuncios = anuncios;
+    }
+
     @Override
     public Collection<Role> getAuthorities() {
         return roles;

@@ -20,14 +20,19 @@ public class ImplementationUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-
         Usuario usuario = usuarioRepository.findUserByLogin(username);
-
         if (usuario == null) {
             throw new UsernameNotFoundException("Usuário não foi encontrado");
         }
-
         return new User(usuario.getLogin(), usuario.getSenha(), usuario.getAuthorities());
+    }
+
+    public void insereAcessoPadrao(Long id) {
+        String constraint = usuarioRepository.consultaConstraintRole();
+        if(constraint != null) {
+            jdbcTemplate.execute(" alter table usuarios_role drop constraint " + constraint);
+        }
+        usuarioRepository.insereAcessoRolePadrao(id);
     }
 
 }

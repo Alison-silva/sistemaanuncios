@@ -24,8 +24,12 @@ public class SistemaanunciosApplication implements WebMvcConfigurer {
 
 	@Override
 	public void addResourceHandlers(ResourceHandlerRegistry registry) {
-		registry.addResourceHandler("/templates/**", "/resources/**", "/static/**", "/css/**")
-				.addResourceLocations("/resources/", "/resources/**");
+		registry.addResourceHandler("/templates/**", "/resources/**", "/static/**", "/assets/**", "/css/**",
+						"classpath:/static/", "classpath:/resources/")
+				.addResourceLocations("/resources/",
+						"classpath:/static/**", "classpath:/static/", "classpath:/static/assets/",
+						"classpath:/resources/", "classpath:/static/css/", "/resources/**",
+						"/WEB-INF/classes/static/**");
 	}
 
 }

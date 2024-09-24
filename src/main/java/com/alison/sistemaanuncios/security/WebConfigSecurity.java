@@ -27,7 +27,7 @@ public class WebConfigSecurity extends WebSecurityConfigurerAdapter {
         http.csrf().csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
                 .disable()
                 .authorizeRequests()
-                .antMatchers("/", "/index").permitAll()
+                .antMatchers("/", "/index", "/registrar", "/salvausuario").permitAll()
                 .anyRequest().authenticated()
                 .and().formLogin().permitAll()
                 .loginPage("/login")
@@ -42,5 +42,9 @@ public class WebConfigSecurity extends WebSecurityConfigurerAdapter {
         auth.userDetailsService(implementationUserDetailsService).passwordEncoder(new BCryptPasswordEncoder());
     }
 
+    @Override
+    public void configure(WebSecurity web) throws Exception {
+        web.ignoring().antMatchers("/assets/**");
+    }
 
 }
