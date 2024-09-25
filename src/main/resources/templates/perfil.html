@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http//www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" >
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Perfil de Usuário</title>
+  <style>
+    .container {
+        background-color: #fff;
+        padding: 20px;
+        border-radius: 5px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+  </style>
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+</head>
+<body>
+<div th:replace="navbar :: navbar"></div>
+
+<br>
+<div class="container">
+
+  <h2>Editar perfil</h2>
+
+  <form  method="post">
+
+    <div class="col-md-1">
+      <div class="form-group">
+        <label for="id">ID</label>
+        <input type="text" class="form-control"  id="id" name="id" readonly="readonly">
+      </div>
+    </div>
+
+    <div class="row g-3">
+      <div class="col-md-6">
+        <div class="form-group">
+          <label for="nome">Nome</label>
+          <input type="text" class="form-control" id="nome" name="nome" required>
+        </div>
+      </div>
+
+      <div class="col-md-6">
+        <div class="form-group">
+          <label for="telefone">Telefone</label>
+          <input type="tel" class="form-control" id="telefone" name="telefone" required>
+        </div>
+      </div>
+    </div>
+    <br>
+    <div class="form-group">
+      <label for="email">E-Mail</label>
+      <input type="email" class="form-control" id="email" name="email" required>
+    </div>
+    <br>
+
+    <div class="row g-3">
+      <div class="col-md-6">
+        <div class="form-group">
+          <label for="nome">Login</label>
+          <input type="text" class="form-control" id="login" name="login" required>
+        </div>
+      </div>
+
+      <div class="col-md-6">
+        <div class="form-group">
+          <label for="telefone">Senha</label>
+          <input type="password" class="form-control" id="senha" name="senha" required>
+        </div>
+      </div>
+    </div>
+
+
+    <br><br>
+
+    <div class="d-grid gap-2">
+      <button type="submit" class="btn btn-primary btn-lg">Salvar alterações</button>
+    </div>
+
+  </form>
+
+</div>
+
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+</body>
+</html>

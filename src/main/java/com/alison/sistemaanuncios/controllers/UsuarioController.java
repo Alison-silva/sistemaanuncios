@@ -41,5 +41,11 @@ public class UsuarioController {
     }
 
 
+    @RequestMapping(method = RequestMethod.GET, value = "**/perfil")
+    public ModelAndView perfil() {
+        ModelAndView model = new ModelAndView("perfil");
+        return model;
+    }
+
 
 }
