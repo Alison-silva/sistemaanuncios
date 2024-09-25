@@ -23,12 +23,12 @@
 
   <h2>Editar perfil</h2>
 
-  <form  method="post">
+  <form action="atualizarperfil" method="post" th:object="${usuario}">
 
     <div class="col-md-1">
       <div class="form-group">
         <label for="id">ID</label>
-        <input type="text" class="form-control"  id="id" name="id" readonly="readonly">
+        <input type="text" class="form-control"  id="id" name="id" th:field="*{id}" readonly="readonly">
       </div>
     </div>
 
@@ -36,21 +36,21 @@
       <div class="col-md-6">
         <div class="form-group">
           <label for="nome">Nome</label>
-          <input type="text" class="form-control" id="nome" name="nome" required>
+          <input type="text" class="form-control" id="nome" name="nome" th:field="*{nome}" required>
         </div>
       </div>
 
       <div class="col-md-6">
         <div class="form-group">
           <label for="telefone">Telefone</label>
-          <input type="tel" class="form-control" id="telefone" name="telefone" required>
+          <input type="tel" class="form-control" id="telefone" name="telefone" th:field="*{telefone}" required>
         </div>
       </div>
     </div>
     <br>
     <div class="form-group">
       <label for="email">E-Mail</label>
-      <input type="email" class="form-control" id="email" name="email" required>
+      <input type="email" class="form-control" id="email" name="email" th:field="*{email}" required>
     </div>
     <br>
 
@@ -58,14 +58,14 @@
       <div class="col-md-6">
         <div class="form-group">
           <label for="nome">Login</label>
-          <input type="text" class="form-control" id="login" name="login" required>
+          <input type="text" class="form-control" id="login" name="login" th:field="*{login}" required>
         </div>
       </div>
 
       <div class="col-md-6">
         <div class="form-group">
           <label for="telefone">Senha</label>
-          <input type="password" class="form-control" id="senha" name="senha" required>
+          <input type="password" class="form-control" id="senha" name="senha" th:field="*{senha}" required>
         </div>
       </div>
     </div>

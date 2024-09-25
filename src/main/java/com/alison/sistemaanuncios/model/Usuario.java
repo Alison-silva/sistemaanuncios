@@ -39,7 +39,7 @@ public class Usuario implements UserDetails {
     private String senha;
 
     @OneToMany(mappedBy = "usuario", orphanRemoval = true, cascade = CascadeType.ALL)
-    private List<Anuncio> anuncios;
+    private List<Anuncio> anuncios = new ArrayList<>();
 
     @OneToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "usuarios_role", uniqueConstraints = @UniqueConstraint(columnNames = { "usuario_id",

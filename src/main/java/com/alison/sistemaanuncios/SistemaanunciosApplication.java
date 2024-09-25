@@ -28,7 +28,7 @@ public class SistemaanunciosApplication implements WebMvcConfigurer {
 						"classpath:/static/", "classpath:/resources/")
 				.addResourceLocations("/resources/",
 						"classpath:/static/**", "classpath:/static/", "classpath:/static/assets/",
-						"classpath:/resources/", "classpath:/static/css/", "/resources/**",
+						"classpath:/resources/", "classpath:/static/css/", "/resources/**", "/assets/**",
 						"/WEB-INF/classes/static/**");
 	}
 
