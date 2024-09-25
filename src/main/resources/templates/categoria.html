@@ -43,10 +43,40 @@
             <th>Remover</th>
         </tr>
         </thead>
-        <tbody id="categoryList">
+        <tbody>
+        <tr th:each = "categoria : ${categorias}">
+            <td th:text = "${categoria.id}" ></td>
+            <td th:text = "${categoria.nomecategoria}"></td>
+            <td>
+                <a th:href="@{editcategoria/{id}(id=${categoria.id})}" >
+                    <button type="button" class="btn btn-success">Editar</button>
+                </a>
+            </td>
+            <td><a th:href="@{deletecategoria/{id}(id=${categoria.id})}" >
+                <button type="button" class="btn btn-danger" onclick="return confirm('Deseja realmente excluir?')">Remover</button></a>
+            </td>
+        </tr>
 
         </tbody>
     </table>
+    <br>
+    <nav aria-label="Page navigation example" style="margin-top: 30px;">
+        <ul class="pagination justify-content-center" th:if="${categorias != null}">
+
+            <li class="page-item" th:if="${categorias.hasPrevious()}" >
+                <a class="page-link" th:href="@{/categoriapag(page=${categorias.number-1}, size=${categorias.size})}">Anterior</a>
+            </li>
+
+            <li class="page-item" th:each="i: ${#numbers.sequence(0, categorias.totalPages - 1)}">
+                <a class="page-link" th:href="@{/categoriapag(page=${i}, size=${categorias.size})}">[[ ${i} + 1 ]]</a>
+            </li>
+
+            <li class="page-item" th:if="${categorias.hasNext()}">
+                <a class="page-link" th:href="@{/categoriapag(page=${categorias.number+1}, size=${categorias.size})}">Próximo</a>
+            </li>
+
+        </ul>
+    </nav>
 </div>
 
 

@@ -9,4 +9,7 @@ import javax.transaction.Transactional;
 @Repository
 @Transactional
 public interface CategoriaRepository extends JpaRepository<Categoria, Long> {
+
+
+
 }
