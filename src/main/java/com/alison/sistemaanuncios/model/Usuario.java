@@ -95,6 +95,14 @@ public class Usuario implements UserDetails {
         this.senha = senha;
     }
 
+    public List<Role> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(List<Role> roles) {
+        this.roles = roles;
+    }
+
     public List<Anuncio> getAnuncios() {
         return anuncios;
     }

@@ -10,10 +10,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.validation.Valid;
@@ -51,27 +48,28 @@ public class UsuarioController {
     @RequestMapping(method = RequestMethod.GET, value = "**/perfil")
     public ModelAndView perfil() {
         ModelAndView model = new ModelAndView("perfil");
-
         buscarUsuarioLogado();
         model.addObject("usuario", usuario);
         return model;
     }
 
     @RequestMapping(method = RequestMethod.POST, value = "**/atualizarperfil")
-    public ModelAndView atualizarperfil(@Valid Usuario usuario) {
+    public ModelAndView atualizarperfil(@Valid Usuario usuario, @RequestParam("roleDesc") String roleDesc) {
+
+        String roleSalvo = roleDesc;
 
         String senhacriptografada = new BCryptPasswordEncoder().encode(usuario.getSenha());
         usuario.setSenha(senhacriptografada);
         Usuario usuarioSalvo = usuarioRepository.save(usuario);
 
-        implementationUserDetailsService.insereAcessoPadrao(usuarioSalvo.getId());
-
+        if (roleSalvo.equalsIgnoreCase("ADMIN")) {
+            implementationUserDetailsService.insereAcessoAdmin(usuarioSalvo.getId());
+        } else {
+            implementationUserDetailsService.insereAcessoPadrao(usuarioSalvo.getId());
+        }
         ModelAndView model = new ModelAndView("index");
-
         return model;
     }
-
-
 
     private void buscarUsuarioLogado() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();

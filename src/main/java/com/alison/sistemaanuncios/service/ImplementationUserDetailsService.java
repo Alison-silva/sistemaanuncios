@@ -35,4 +35,14 @@ public class ImplementationUserDetailsService implements UserDetailsService {
         usuarioRepository.insereAcessoRolePadrao(id);
     }
 
+    public void insereAcessoAdmin(Long id) {
+        String constraint = usuarioRepository.consultaConstraintRole();
+        if (constraint != null) {
+            jdbcTemplate.execute("ALTER TABLE usuarios_role DROP CONSTRAINT " + constraint);
+        }
+        usuarioRepository.insereAcessoRoleAdmin(id);
+    }
+
+
+
 }
