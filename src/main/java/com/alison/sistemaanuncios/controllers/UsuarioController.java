@@ -62,7 +62,7 @@ public class UsuarioController {
         usuario.setSenha(senhacriptografada);
         Usuario usuarioSalvo = usuarioRepository.save(usuario);
 
-        if (roleSalvo.equalsIgnoreCase("ADMIN")) {
+        if (roleSalvo.equalsIgnoreCase("ROLE_ADMIN")) {
             implementationUserDetailsService.insereAcessoAdmin(usuarioSalvo.getId());
         } else {
             implementationUserDetailsService.insereAcessoPadrao(usuarioSalvo.getId());
