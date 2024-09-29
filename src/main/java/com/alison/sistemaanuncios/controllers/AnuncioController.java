@@ -5,19 +5,35 @@ import com.alison.sistemaanuncios.model.Usuario;
 import com.alison.sistemaanuncios.repositories.AnuncioRepository;
 import com.alison.sistemaanuncios.repositories.CategoriaRepository;
 import com.alison.sistemaanuncios.repositories.UsuarioRepository;
+import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.text.NumberFormat;
 import java.util.Date;
+import java.util.Locale;
+import java.util.Optional;
 
 @Controller
 public class AnuncioController {
@@ -42,23 +58,33 @@ public class AnuncioController {
         return model;
     }
 
-    @RequestMapping(method = RequestMethod.GET, value = "anuncio")
+    @RequestMapping(method = RequestMethod.GET, value = "**/anuncio")
     public ModelAndView anuncio() {
         ModelAndView model = new ModelAndView("anuncio");
         buscarUsuarioLogado();
         model.addObject("categorias", categoriaRepository.findAll());
+        model.addObject("anuncios", anuncioRepository.findAll(PageRequest.of(0, 5, Sort.by("id"))));
         model.addObject("anuncioobj", new Anuncio());
         model.addObject("usuario", usuario);
         return model;
     }
 
+    @GetMapping("/anunciopag")
+    public ModelAndView carregaAnunPorPaginacao(@PageableDefault(size=5, sort = {"id"}) Pageable pageable,
+                                               ModelAndView model) {
+        Page<Anuncio> pageAnuncio = anuncioRepository.findAll(pageable);
+        model.addObject("anuncios", pageAnuncio);
+        model.addObject("anuncioobj", new Anuncio());
+        model.addObject("categorias", categoriaRepository.findAll());
+        model.setViewName("anuncio");
+        buscarUsuarioLogado();
+        model.addObject("usuario", usuario);
+        return model;
+    }
+
     @RequestMapping(method = RequestMethod.POST, value = "**/salvaranuncio", consumes = { "multipart/form-data" })
-    public ModelAndView salvaranuncio(@Valid Anuncio anuncio, BindingResult bindingResult, final MultipartFile file) throws Exception {
-
-        ModelAndView model = new ModelAndView("anuncio");
-        model.addObject("anuncioobj", anuncio);
-
-
+    public String salvaranuncio(@Valid Anuncio anuncio, BindingResult bindingResult, final MultipartFile file, RedirectAttributes redirectAttributes) throws Exception {
+        redirectAttributes.addFlashAttribute("anuncioobj", anuncio);
         if (file.getSize() > 0) {
             anuncio.setImage(file.getBytes());
         } else {
@@ -67,14 +93,47 @@ public class AnuncioController {
                 anuncio.setImage(imageTemp);
             }
         }
-
         Date now = new Date();
         anuncio.setTimestamp(now);
-        model.addObject("usuario", usuario);
+        redirectAttributes.addFlashAttribute("usuario", usuario);
         anuncio.setUsuario(usuario);
+        String msgok = new String("Registrado com sucesso!");
         anuncioRepository.save(anuncio);
-        model.addObject("anuncioobj", new Anuncio());
+        redirectAttributes.addFlashAttribute("msgok", msgok);
+        redirectAttributes.addFlashAttribute("anuncioobj", new Anuncio());
+        redirectAttributes.addFlashAttribute("anuncios", anuncioRepository.findAll(PageRequest.of(0, 5, Sort.by("id"))));
+        return "redirect:/anuncio";
+    }
+
+    @GetMapping("/imagemanuncio/{idanun}")
+    public void imagemanuncio(@PathVariable("idanun") Long idanun, HttpServletResponse response) throws IOException {
+        response.setContentType("image/jpeg");
+        Anuncio anuncio = anuncioRepository.findById(idanun).get();
+        InputStream is = new ByteArrayInputStream(anuncio.getImage());
+        IOUtils.copy(is, response.getOutputStream());
+    }
+
+    @RequestMapping(method = RequestMethod.GET, value = "**/editanuncio/{id}")
+    public ModelAndView editar(@PathVariable("id") Long id) {
+        Optional<Anuncio> anuncio = anuncioRepository.findById(id);
+        ModelAndView model = new ModelAndView("anuncio");
+        model.addObject("anuncioobj", anuncio);
+        model.addObject("anuncios", anuncioRepository.findAll(PageRequest.of(0, 5, Sort.by("id"))));
+        model.addObject("categorias", categoriaRepository.findAll());
+        buscarUsuarioLogado();
+        model.addObject("usuario", usuario);
         return model;
+    }
+
+    @RequestMapping(method = RequestMethod.GET, value = "**/deleteanuncio/{id}")
+    public String delete(@PathVariable("id") Long id, RedirectAttributes redirectAttributes, Anuncio anuncio) {
+        anuncioRepository.deleteById(id);
+        redirectAttributes.addFlashAttribute("anuncios", anuncioRepository.findAll(PageRequest.of(0, 5, Sort.by("id"))));
+        redirectAttributes.addFlashAttribute("anuncioobj", anuncio);
+        redirectAttributes.addFlashAttribute("categorias", categoriaRepository.findAll());
+        buscarUsuarioLogado();
+        redirectAttributes.addFlashAttribute("usuario", usuario);
+        return "redirect:/anuncio";
     }
 
 

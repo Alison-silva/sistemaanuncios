@@ -40,7 +40,7 @@ public class Anuncio implements Serializable {
     private Categoria categoria;
 
     @NotNull(message = "Preço não pode ser nulo!")
-    private BigDecimal preco = BigDecimal.ZERO;
+    private BigDecimal preco;
 
     @ManyToOne
     private Usuario usuario;

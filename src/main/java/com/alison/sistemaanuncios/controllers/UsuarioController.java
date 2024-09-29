@@ -1,6 +1,7 @@
 package com.alison.sistemaanuncios.controllers;
 
 import com.alison.sistemaanuncios.model.Usuario;
+import com.alison.sistemaanuncios.repositories.AnuncioRepository;
 import com.alison.sistemaanuncios.repositories.UsuarioRepository;
 import com.alison.sistemaanuncios.service.ImplementationUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +21,9 @@ public class UsuarioController {
 
     @Autowired
     private UsuarioRepository usuarioRepository;
+
+    @Autowired
+    private AnuncioRepository anuncioRepository;
 
     Usuario usuario = new Usuario();
 
@@ -55,6 +59,8 @@ public class UsuarioController {
 
     @RequestMapping(method = RequestMethod.POST, value = "**/atualizarperfil")
     public ModelAndView atualizarperfil(@Valid Usuario usuario, @RequestParam("roleDesc") String roleDesc) {
+
+        usuario.setAnuncios(anuncioRepository.getAnuncios(usuario.getId()));
 
         String roleSalvo = roleDesc;
 

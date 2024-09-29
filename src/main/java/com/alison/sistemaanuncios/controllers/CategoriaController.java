@@ -35,7 +35,7 @@ public class CategoriaController {
     @Autowired
     private UsuarioRepository usuarioRepository;
 
-    @RequestMapping(method = RequestMethod.GET, value = "categoria")
+    @RequestMapping(method = RequestMethod.GET, value = "**/categoria")
     public ModelAndView index() {
         ModelAndView model = new ModelAndView("categoria");
         model.addObject("categorias", categoriaRepository.findAll(PageRequest.of(0, 5, Sort.by("id"))));
