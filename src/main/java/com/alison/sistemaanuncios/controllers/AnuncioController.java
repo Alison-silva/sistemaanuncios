@@ -17,10 +17,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -30,9 +27,7 @@ import javax.validation.Valid;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.text.NumberFormat;
 import java.util.Date;
-import java.util.Locale;
 import java.util.Optional;
 
 @Controller
@@ -60,19 +55,20 @@ public class AnuncioController {
 
     @RequestMapping(method = RequestMethod.GET, value = "**/anuncio")
     public ModelAndView anuncio() {
+
         ModelAndView model = new ModelAndView("anuncio");
         buscarUsuarioLogado();
         model.addObject("categorias", categoriaRepository.findAll());
-        model.addObject("anuncios", anuncioRepository.findAll(PageRequest.of(0, 5, Sort.by("id"))));
-        model.addObject("anuncioobj", new Anuncio());
         model.addObject("usuario", usuario);
+        model.addObject("anuncios", anuncioRepository.findAnuncioByUserId(usuario.getId(), PageRequest.of(0, 5, Sort.by("id"))));
+        model.addObject("anuncioobj", new Anuncio());
         return model;
     }
 
     @GetMapping("/anunciopag")
     public ModelAndView carregaAnunPorPaginacao(@PageableDefault(size=5, sort = {"id"}) Pageable pageable,
                                                ModelAndView model) {
-        Page<Anuncio> pageAnuncio = anuncioRepository.findAll(pageable);
+        Page<Anuncio> pageAnuncio = anuncioRepository.findAnuncioByUserId(usuario.getId(), pageable);
         model.addObject("anuncios", pageAnuncio);
         model.addObject("anuncioobj", new Anuncio());
         model.addObject("categorias", categoriaRepository.findAll());
@@ -101,7 +97,7 @@ public class AnuncioController {
         anuncioRepository.save(anuncio);
         redirectAttributes.addFlashAttribute("msgok", msgok);
         redirectAttributes.addFlashAttribute("anuncioobj", new Anuncio());
-        redirectAttributes.addFlashAttribute("anuncios", anuncioRepository.findAll(PageRequest.of(0, 5, Sort.by("id"))));
+        redirectAttributes.addFlashAttribute("anuncios", anuncioRepository.findAnuncioByUserId(usuario.getId(), PageRequest.of(0, 5, Sort.by("id"))));
         return "redirect:/anuncio";
     }
 
@@ -118,7 +114,7 @@ public class AnuncioController {
         Optional<Anuncio> anuncio = anuncioRepository.findById(id);
         ModelAndView model = new ModelAndView("anuncio");
         model.addObject("anuncioobj", anuncio);
-        model.addObject("anuncios", anuncioRepository.findAll(PageRequest.of(0, 5, Sort.by("id"))));
+        model.addObject("anuncios", anuncioRepository.findAnuncioByUserId(usuario.getId(), PageRequest.of(0, 5, Sort.by("id"))));
         model.addObject("categorias", categoriaRepository.findAll());
         buscarUsuarioLogado();
         model.addObject("usuario", usuario);
@@ -128,7 +124,7 @@ public class AnuncioController {
     @RequestMapping(method = RequestMethod.GET, value = "**/deleteanuncio/{id}")
     public String delete(@PathVariable("id") Long id, RedirectAttributes redirectAttributes, Anuncio anuncio) {
         anuncioRepository.deleteById(id);
-        redirectAttributes.addFlashAttribute("anuncios", anuncioRepository.findAll(PageRequest.of(0, 5, Sort.by("id"))));
+        redirectAttributes.addFlashAttribute("anuncios", anuncioRepository.findAnuncioByUserId(usuario.getId(), PageRequest.of(0, 5, Sort.by("id"))));
         redirectAttributes.addFlashAttribute("anuncioobj", anuncio);
         redirectAttributes.addFlashAttribute("categorias", categoriaRepository.findAll());
         buscarUsuarioLogado();
@@ -143,7 +139,7 @@ public class AnuncioController {
             String login = authentication.getName();
             usuario = usuarioRepository.buscarUsuarioLogin(login).get(0);
         }
-
     }
+
 
 }

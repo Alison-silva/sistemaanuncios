@@ -50,7 +50,7 @@
             <div class="col-md-3">
                 <div class="form-group">
                     <label for="preco">Preço</label>
-                    <input type="text" class="form-control" placeholder="R$ 9 999 99" id="preco" name="preco" th:field="*{preco}" required>
+                    <input type="text" class="form-control" placeholder="R$ 9.999,99" id="preco" name="preco" th:field="*{preco}" required>
                 </div>
             </div>
 
@@ -130,8 +130,11 @@
     </nav>
 </div>
 
-
-
+<script type="text/javascript">
+        $(document).ready(function(){
+            $('#preco').mask('000000.00', {reverse: true});
+        });
+</script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 </body>
 </html>
