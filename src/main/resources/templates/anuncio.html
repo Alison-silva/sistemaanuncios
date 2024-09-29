@@ -13,19 +13,19 @@
 <div class="container mt-5">
 
     <h2>Cadastro de Anúncios</h2>
-    <form method="post">
+    <form method="post" action="salvaranuncio" enctype="multipart/form-data" th:object="${anuncioobj}">
 
         <div class="row g-3">
             <div class="col-md-1">
                 <div class="form-group">
                     <label for="id">ID</label>
-                    <input type="text" class="form-control" id="id" name="id"  readonly="readonly">
+                    <input type="text" class="form-control" id="id" name="id" th:field="*{id}"  readonly="readonly">
                 </div>
             </div>
             <div class="col-md-8">
                 <div class="form-group">
                     <label for="titulo">Título</label>
-                    <input type="text" class="form-control" id="titulo" name="titulo" required>
+                    <input type="text" class="form-control" id="titulo" name="titulo" th:field="*{titulo}" required>
                 </div>
             </div>
         </div>
@@ -33,27 +33,24 @@
         <div class="row g-3">
             <div class="col-md-3">
                 <div class="form-group">
-                    <label for="nomecategoria">Categoria</label>
-                    <select class="form-control" id="nomecategoria" name="nomecategoria" required>
-                        <option value="">--[Todos]--</option>
-                        <option value="Eletrônico">Eletrônico</option>
-                        <option value="Vestuário">Vestuário</option>
-                        <option value="Automóveis">Automóveis</option>
-                        <option value="Celular">Celular</option>
+                    <label for="categoria">Categoria</label>
+                    <select class="form-control" id="categoria" th:field="*{categoria}" required>
+                        <option value="">--Escolha uma categoria--</option>
+                        <option th:each="c : ${categorias}" th:value="${c.id}" th:text="${c.nomecategoria}">
                     </select>
                 </div>
             </div>
             <div class="col-md-3">
                 <div class="form-group">
                     <label for="preco">Preço</label>
-                    <input type="number" class="form-control" id="preco" name="preco" required>
+                    <input type="number" class="form-control" id="preco" name="preco" th:field="*{preco}" required>
                 </div>
             </div>
 
             <div class="col-md-3">
                 <div class="form-group">
-                    <label for="imagem">Imagem</label>
-                    <input type="file" class="form-control" id="imagem" name="imagem" required>
+                    <label for="file">Imagem</label>
+                    <input type="file" class="form-control" id="file" name="file">
                 </div>
             </div>
         </div>
@@ -62,7 +59,7 @@
             <div class="col-md-9">
                 <div class="form-group">
                     <label for="descricao">Descrição</label>
-                    <textarea type="text" class="form-control" id="descricao" name="descricao" rows="4" cols="50" required></textarea>
+                    <textarea type="text" class="form-control" id="descricao" name="descricao" th:field="*{descricao}" rows="4" cols="50" required></textarea>
                 </div>
             </div>
         </div>

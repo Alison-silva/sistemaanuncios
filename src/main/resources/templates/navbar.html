@@ -35,6 +35,9 @@
         </ul>
       </div>
     </div>
+    <a class="navbar-brand" id="tar" sec:authorize="isAuthenticated()" href="perfil" style="font-size: 14px;">
+     <span>Seja bem-vindo </span> <span th:text="${ usuario.nome}"></span>
+    </a>
   </nav>
 
 </div>

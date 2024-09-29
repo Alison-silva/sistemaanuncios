@@ -39,12 +39,13 @@ public class Anuncio implements Serializable {
     @ManyToOne(fetch = FetchType.EAGER)
     private Categoria categoria;
 
-    @NotEmpty(message = "Preço não pode ser vazio!")
     @NotNull(message = "Preço não pode ser nulo!")
     private BigDecimal preco = BigDecimal.ZERO;
 
     @ManyToOne
     private Usuario usuario;
+
+
 
     public Long getId() {
         return id;
@@ -100,5 +101,14 @@ public class Anuncio implements Serializable {
 
     public void setPreco(BigDecimal preco) {
         this.preco = preco;
+    }
+
+
+    public Usuario getUsuario() {
+        return usuario;
+    }
+
+    public void setUsuario(Usuario usuario) {
+        this.usuario = usuario;
     }
 }
