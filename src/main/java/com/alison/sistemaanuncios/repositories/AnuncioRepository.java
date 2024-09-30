@@ -1,6 +1,9 @@
 package com.alison.sistemaanuncios.repositories;
 
 import com.alison.sistemaanuncios.model.Anuncio;
+import com.alison.sistemaanuncios.model.Categoria;
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -19,5 +22,20 @@ public interface AnuncioRepository extends JpaRepository<Anuncio, Long> {
 
     @Query(nativeQuery = true, value = "select * from anuncio where usuario_id = ?1 ")
     Page<Anuncio> findAnuncioByUserId(Long usuarioid, Pageable pageable);
+
+    default Page<Anuncio> findAnuncioByTituloPage(String titulo, Pageable pageable) {
+
+        Anuncio anuncio = new Anuncio();
+        anuncio.setTitulo(titulo);
+
+        ExampleMatcher exampleMatcher = ExampleMatcher.matchingAny().withMatcher("titulo",
+                ExampleMatcher.GenericPropertyMatchers.contains().ignoreCase());
+
+        Example<Anuncio> example = Example.of(anuncio, exampleMatcher);
+
+        Page<Anuncio> anuncios = findAll(example, pageable);
+
+        return anuncios;
+    }
 
 }

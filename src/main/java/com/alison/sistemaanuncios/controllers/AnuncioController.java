@@ -49,9 +49,37 @@ public class AnuncioController {
     public ModelAndView index() {
         ModelAndView model = new ModelAndView("index");
         buscarUsuarioLogado();
+        model.addObject("anuncios", anuncioRepository.findAll(PageRequest.of(0, 8, Sort.by("id"))));
         model.addObject("usuario", usuario);
         return model;
     }
+
+    @GetMapping("/anuncioindexpag")
+    public ModelAndView carregaAnunPorPaginacaoIndex(@PageableDefault(size=8, sort = {"id"}) Pageable pageable,
+                                                ModelAndView model, @RequestParam("titulopesquisa") String titulopesquisa) {
+        Page<Anuncio> pageAnuncio = anuncioRepository.findAnuncioByTituloPage(titulopesquisa, pageable);
+        model.addObject("anuncios", pageAnuncio);
+        model.addObject("titulopesquisa", titulopesquisa);
+        model.setViewName("index");
+        buscarUsuarioLogado();
+        model.addObject("usuario", usuario);
+        return model;
+    }
+
+    @PostMapping("**/buscatitulo")
+    public ModelAndView buscatitulo(@RequestParam("titulopesquisa") String titulopesquisa,
+                                  @PageableDefault(size = 8, sort = { "id" }) Pageable pageable) {
+
+        Page<Anuncio> anuncios;
+        anuncios = anuncioRepository.findAnuncioByTituloPage(titulopesquisa, pageable);
+        buscarUsuarioLogado();
+        ModelAndView model = new ModelAndView("index");
+        model.addObject("anuncios", anuncios);
+        model.addObject("titulopesquisa", titulopesquisa);
+        model.addObject("usuario", usuario);
+        return model;
+    }
+
 
     @RequestMapping(method = RequestMethod.GET, value = "**/anuncio")
     public ModelAndView anuncio() {

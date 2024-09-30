@@ -96,7 +96,6 @@
                     <img th:if="${anuncio.image == null}" class="avatar avatar-sm me-3" alt="user1" height="50px" width="50px">
                 </td>
                 <td th:text = "${anuncio.titulo}" ></td>
-              <!--  <td th:text = "${anuncio.preco}" ></td> -->
                 <td th:text="${#numbers.formatCurrency(anuncio.preco)}"></td>
 
                 <td>

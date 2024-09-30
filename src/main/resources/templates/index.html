@@ -15,16 +15,18 @@
 <div class="container">
     <div class="row">
         <div class="col">
-            <form method="post">
+
+            <form action="buscatitulo" method="post">
                 <div class="form-group mb-2">
-                    <label class="form-control-label">Pesquisar por Anúncio</label>
+                    <label class="form-control-label">Pesquisar por Título</label>
                 </div>
                 <div class="form-group col-md-6">
-                    <input class="form-control">
+                    <input class="form-control" name="titulopesquisa" id="titulopesquisa" th:value="${titulopesquisa}">
                 </div>
                 <br>
                 <input type="submit" value="Buscar" class="btn btn-primary">
             </form>
+
         </div>
 
         <div class="col">
@@ -55,24 +57,49 @@
 
     <div class="row">
 
-        <div class="col">
+        <div class="col" th:each = "anuncio : ${anuncios}">
 
-            <div class="card" style="width: 18rem;">
-                <img src="" class="card-img-top" alt="...">
+            <div class="card" style="width: 17rem;">
+                <img th:if="${anuncio.image != null}" th:src="@{/imagemanuncio/{idanun}(idanun=${anuncio.id})}" class="card-img-top" height="150px" width="180px" alt="user1">
+                <img th:if="${anuncio.image == null}"  src="" class="card-img-top" alt="user1" height="50px" width="50px">
+
                 <div class="card-body">
-                    <h5 class="card-title">Gol Trendline 1.6 MSI, completo e pouco rodad</h5>
-                    <p class="card-text">Automóveis</p>
+                    <h5 class="card-title"><span th:utext="${#strings.abbreviate(anuncio.titulo,50)}"></span></h5>
+                    <p class="card-text"><span th:text = "${anuncio.categoria.nomecategoria}" ></span></p>
                 </div>
+                <hr>
                 <div class="card-body">
-                    <p class="card-text">R$ 36900,00 </p>
+                    <p class="card-text" th:text="${#numbers.formatCurrency(anuncio.preco)}"></p>
                 </div>
             </div>
+            <br>
 
         </div>
 
         </br>
 
     </div>
+
+
+    <br>
+    <nav aria-label="Page navigation example" style="margin-top: 30px;">
+        <ul class="pagination justify-content-center" th:if="${anuncios != null}">
+
+            <li class="page-item" th:if="${anuncios.hasPrevious()}" >
+                <a class="page-link" th:href="@{/anuncioindexpag(page=${anuncios.number-1}, size=${anuncios.size}, titulopesquisa=${titulopesquisa})}">Anterior</a>
+            </li>
+
+            <li class="page-item" th:each="i: ${#numbers.sequence(0, anuncios.totalPages - 1)}">
+                <a class="page-link" th:href="@{/anuncioindexpag(page=${i}, size=${anuncios.size}, titulopesquisa=${titulopesquisa})}">[[ ${i} + 1 ]]</a>
+            </li>
+
+            <li class="page-item" th:if="${anuncios.hasNext()}">
+                <a class="page-link" th:href="@{/anuncioindexpag(page=${anuncios.number+1}, size=${anuncios.size}, titulopesquisa=${titulopesquisa})}">Próximo</a>
+            </li>
+
+        </ul>
+    </nav>
+
 
 </div>
 
