@@ -30,18 +30,15 @@
         </div>
 
         <div class="col">
-            <form method="post">
+            <form action="buscacategoria" method="post" >
                 <div class="form-group mb-2">
                     <label class="form-control-label">Pesquisar por Categoria</label>
                 </div>
                 <div class="col-md-6">
                     <div class="form-group">
-                        <select class="form-control">
-                            <option value="">--[Todos]--</option>
-                            <option value="Eletrônico">Eletrônico</option>
-                            <option value="Vestuário">Vestuário</option>
-                            <option value="Automóveis">Automóveis</option>
-                            <option value="Celular">Celular</option>
+                        <select class="form-control" id="categoriapesquisa" name="categoriapesquisa" required>
+                            <option value="">--Escolha uma categoria--</option>
+                            <option th:each="c : ${categorias}" th:value="${c.id}" th:text="${c.nomecategoria}">
                         </select>
                     </div>
                 </div>
@@ -86,15 +83,15 @@
         <ul class="pagination justify-content-center" th:if="${anuncios != null}">
 
             <li class="page-item" th:if="${anuncios.hasPrevious()}" >
-                <a class="page-link" th:href="@{/anuncioindexpag(page=${anuncios.number-1}, size=${anuncios.size}, titulopesquisa=${titulopesquisa})}">Anterior</a>
+                <a class="page-link" th:href="@{/anuncioindexpag(page=${anuncios.number-1}, size=${anuncios.size}, titulopesquisa=${titulopesquisa}, categoriapesquisa=${categoriapesquisa})}">Anterior</a>
             </li>
 
             <li class="page-item" th:each="i: ${#numbers.sequence(0, anuncios.totalPages - 1)}">
-                <a class="page-link" th:href="@{/anuncioindexpag(page=${i}, size=${anuncios.size}, titulopesquisa=${titulopesquisa})}">[[ ${i} + 1 ]]</a>
+                <a class="page-link" th:href="@{/anuncioindexpag(page=${i}, size=${anuncios.size}, titulopesquisa=${titulopesquisa}, categoriapesquisa=${categoriapesquisa})}">[[ ${i} + 1 ]]</a>
             </li>
 
             <li class="page-item" th:if="${anuncios.hasNext()}">
-                <a class="page-link" th:href="@{/anuncioindexpag(page=${anuncios.number+1}, size=${anuncios.size}, titulopesquisa=${titulopesquisa})}">Próximo</a>
+                <a class="page-link" th:href="@{/anuncioindexpag(page=${anuncios.number+1}, size=${anuncios.size}, titulopesquisa=${titulopesquisa}, categoriapesquisa=${categoriapesquisa})}">Próximo</a>
             </li>
 
         </ul>

@@ -1,6 +1,7 @@
 package com.alison.sistemaanuncios.controllers;
 
 import com.alison.sistemaanuncios.model.Anuncio;
+import com.alison.sistemaanuncios.model.Categoria;
 import com.alison.sistemaanuncios.model.Usuario;
 import com.alison.sistemaanuncios.repositories.AnuncioRepository;
 import com.alison.sistemaanuncios.repositories.CategoriaRepository;
@@ -49,18 +50,26 @@ public class AnuncioController {
     public ModelAndView index() {
         ModelAndView model = new ModelAndView("index");
         buscarUsuarioLogado();
+        model.addObject("categorias", categoriaRepository.findAll());
         model.addObject("anuncios", anuncioRepository.findAll(PageRequest.of(0, 8, Sort.by("id"))));
         model.addObject("usuario", usuario);
         return model;
     }
 
     @GetMapping("/anuncioindexpag")
-    public ModelAndView carregaAnunPorPaginacaoIndex(@PageableDefault(size=8, sort = {"id"}) Pageable pageable,
-                                                ModelAndView model, @RequestParam("titulopesquisa") String titulopesquisa) {
-        Page<Anuncio> pageAnuncio = anuncioRepository.findAnuncioByTituloPage(titulopesquisa, pageable);
+    public ModelAndView carregaAnunPorPaginacaoIndex(@PageableDefault(size = 8, sort = { "id" }) Pageable pageable,
+                                                     @RequestParam("titulopesquisa") String titulopesquisa,
+                                                     @RequestParam(value = "categoriapesquisa", required = false) Long id) {
+        ModelAndView model = new ModelAndView("index");
+        Categoria categoria = null;
+        if (id != null) {
+            categoria = categoriaRepository.findById(id).orElse(null);
+        }
+        Page<Anuncio> pageAnuncio = anuncioRepository.findAnuncioBytituloandCategoriaPage(categoria, titulopesquisa, pageable);
         model.addObject("anuncios", pageAnuncio);
+        model.addObject("categorias", categoriaRepository.findAll());
         model.addObject("titulopesquisa", titulopesquisa);
-        model.setViewName("index");
+        model.addObject("categoriapesquisa", id);
         buscarUsuarioLogado();
         model.addObject("usuario", usuario);
         return model;
@@ -68,18 +77,33 @@ public class AnuncioController {
 
     @PostMapping("**/buscatitulo")
     public ModelAndView buscatitulo(@RequestParam("titulopesquisa") String titulopesquisa,
-                                  @PageableDefault(size = 8, sort = { "id" }) Pageable pageable) {
-
-        Page<Anuncio> anuncios;
-        anuncios = anuncioRepository.findAnuncioByTituloPage(titulopesquisa, pageable);
-        buscarUsuarioLogado();
+                                    @PageableDefault(size = 8, sort = { "id" }) Pageable pageable) {
+        Page<Anuncio> anuncios = anuncioRepository.findAnuncioByTituloPage(titulopesquisa, pageable);
         ModelAndView model = new ModelAndView("index");
+        model.addObject("categorias", categoriaRepository.findAll());
         model.addObject("anuncios", anuncios);
         model.addObject("titulopesquisa", titulopesquisa);
+        buscarUsuarioLogado();
         model.addObject("usuario", usuario);
         return model;
     }
 
+    @PostMapping("/buscacategoria")
+    public ModelAndView buscacategoria(@RequestParam(value = "categoriapesquisa", required = false) Long id,
+                                       @PageableDefault(size = 8, sort = { "id" }) Pageable pageable) {
+        ModelAndView model = new ModelAndView("index");
+        Categoria categoria = null;
+        if (id != null) {
+            categoria = categoriaRepository.findById(id).orElse(null);
+        }
+        Page<Anuncio> anuncios = anuncioRepository.findAnuncioByCategoriaPage(categoria, pageable);
+        model.addObject("categorias", categoriaRepository.findAll());
+        model.addObject("anuncios", anuncios);
+        model.addObject("categoriapesquisa", id);
+        buscarUsuarioLogado();
+        model.addObject("usuario", usuario);
+        return model;
+    }
 
     @RequestMapping(method = RequestMethod.GET, value = "**/anuncio")
     public ModelAndView anuncio() {

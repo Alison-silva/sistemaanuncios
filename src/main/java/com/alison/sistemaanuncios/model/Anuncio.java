@@ -46,7 +46,6 @@ public class Anuncio implements Serializable {
     private Usuario usuario;
 
 
-
     public Long getId() {
         return id;
     }

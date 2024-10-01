@@ -24,12 +24,35 @@ public interface AnuncioRepository extends JpaRepository<Anuncio, Long> {
     Page<Anuncio> findAnuncioByUserId(Long usuarioid, Pageable pageable);
 
     default Page<Anuncio> findAnuncioByTituloPage(String titulo, Pageable pageable) {
-
         Anuncio anuncio = new Anuncio();
         anuncio.setTitulo(titulo);
-
         ExampleMatcher exampleMatcher = ExampleMatcher.matchingAny().withMatcher("titulo",
                 ExampleMatcher.GenericPropertyMatchers.contains().ignoreCase());
+        Example<Anuncio> example = Example.of(anuncio, exampleMatcher);
+        Page<Anuncio> anuncios = findAll(example, pageable);
+        return anuncios;
+    }
+
+    default Page<Anuncio> findAnuncioByCategoriaPage(Categoria categoria, Pageable pageable) {
+        Anuncio anuncio = new Anuncio();
+        anuncio.setCategoria(categoria);
+        ExampleMatcher exampleMatcher = ExampleMatcher.matchingAny().withMatcher("categoria",
+                ExampleMatcher.GenericPropertyMatchers.contains().ignoreCase());
+        Example<Anuncio> example = Example.of(anuncio, exampleMatcher);
+        Page<Anuncio> anuncios = findAll(example, pageable);
+        return anuncios;
+
+    }
+
+    default Page<Anuncio> findAnuncioBytituloandCategoriaPage(Categoria categoria, String titulo, Pageable pageable) {
+
+        Anuncio anuncio = new Anuncio();
+        anuncio.setCategoria(categoria);
+        anuncio.setTitulo(titulo);
+
+        ExampleMatcher exampleMatcher = ExampleMatcher.matchingAny()
+                .withMatcher("titulo", ExampleMatcher.GenericPropertyMatchers.contains().ignoreCase())
+                .withMatcher("categoria", ExampleMatcher.GenericPropertyMatchers.contains().ignoreCase());
 
         Example<Anuncio> example = Example.of(anuncio, exampleMatcher);
 
