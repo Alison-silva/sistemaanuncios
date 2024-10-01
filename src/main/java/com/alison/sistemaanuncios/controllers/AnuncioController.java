@@ -56,27 +56,31 @@ public class AnuncioController {
         return model;
     }
 
-    @GetMapping("/anuncioindexpag")
+    @GetMapping("**/anuncioindexpag")
     public ModelAndView carregaAnunPorPaginacaoIndex(@PageableDefault(size = 8, sort = { "id" }) Pageable pageable,
-                                                     @RequestParam("titulopesquisa") String titulopesquisa,
-                                                     @RequestParam(value = "categoriapesquisa", required = false) Long id) {
-        ModelAndView model = new ModelAndView("index");
-        Categoria categoria = null;
+                                                     @RequestParam(value = "titulopesquisa", required = false) String titulopesquisa,
+                                                     @RequestParam(value = "categoriapesquisa", required = false) Long id,
+                                                     ModelAndView model) {
+        Page<Anuncio> pageAnuncio;
         if (id != null) {
-            categoria = categoriaRepository.findById(id).orElse(null);
+            Categoria categoria = categoriaRepository.findById(id).orElse(null);
+            pageAnuncio = anuncioRepository.findAnuncioByCategoriaPage(categoria, pageable);
+        } else {
+            pageAnuncio = anuncioRepository.findAnuncioByTituloPage(titulopesquisa, pageable);
         }
-        Page<Anuncio> pageAnuncio = anuncioRepository.findAnuncioBytituloandCategoriaPage(categoria, titulopesquisa, pageable);
-        model.addObject("anuncios", pageAnuncio);
+
         model.addObject("categorias", categoriaRepository.findAll());
+        model.addObject("anuncios", pageAnuncio);
         model.addObject("titulopesquisa", titulopesquisa);
         model.addObject("categoriapesquisa", id);
         buscarUsuarioLogado();
         model.addObject("usuario", usuario);
+        model.setViewName("index");
         return model;
     }
 
     @PostMapping("**/buscatitulo")
-    public ModelAndView buscatitulo(@RequestParam("titulopesquisa") String titulopesquisa,
+    public ModelAndView buscatitulo(@RequestParam(value = "titulopesquisa", required = false) String titulopesquisa,
                                     @PageableDefault(size = 8, sort = { "id" }) Pageable pageable) {
         Page<Anuncio> anuncios = anuncioRepository.findAnuncioByTituloPage(titulopesquisa, pageable);
         ModelAndView model = new ModelAndView("index");
@@ -88,7 +92,7 @@ public class AnuncioController {
         return model;
     }
 
-    @PostMapping("/buscacategoria")
+    @PostMapping("**/buscacategoria")
     public ModelAndView buscacategoria(@RequestParam(value = "categoriapesquisa", required = false) Long id,
                                        @PageableDefault(size = 8, sort = { "id" }) Pageable pageable) {
         ModelAndView model = new ModelAndView("index");

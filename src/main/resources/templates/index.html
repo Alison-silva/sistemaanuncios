@@ -38,7 +38,7 @@
                     <div class="form-group">
                         <select class="form-control" id="categoriapesquisa" name="categoriapesquisa" required>
                             <option value="">--Escolha uma categoria--</option>
-                            <option th:each="c : ${categorias}" th:value="${c.id}" th:text="${c.nomecategoria}">
+                            <option th:each="c : ${categorias}" th:value="${c.id}" th:text="${c.nomecategoria}" th:selected="${c.id} == ${categoriapesquisa}">
                         </select>
                     </div>
                 </div>
@@ -83,15 +83,15 @@
         <ul class="pagination justify-content-center" th:if="${anuncios != null}">
 
             <li class="page-item" th:if="${anuncios.hasPrevious()}" >
-                <a class="page-link" th:href="@{/anuncioindexpag(page=${anuncios.number-1}, size=${anuncios.size}, titulopesquisa=${titulopesquisa}, categoriapesquisa=${categoriapesquisa})}">Anterior</a>
+                <a class="page-link" th:href="@{/anuncioindexpag(page=${anuncios.number-1}, size=${anuncios.size}, categoriapesquisa=${categoriapesquisa}, titulopesquisa=${titulopesquisa})}">Anterior</a>
             </li>
 
             <li class="page-item" th:each="i: ${#numbers.sequence(0, anuncios.totalPages - 1)}">
-                <a class="page-link" th:href="@{/anuncioindexpag(page=${i}, size=${anuncios.size}, titulopesquisa=${titulopesquisa}, categoriapesquisa=${categoriapesquisa})}">[[ ${i} + 1 ]]</a>
+                <a class="page-link" th:href="@{/anuncioindexpag(page=${i}, size=${anuncios.size}, categoriapesquisa=${categoriapesquisa}, titulopesquisa=${titulopesquisa})}">[[ ${i} + 1 ]]</a>
             </li>
 
             <li class="page-item" th:if="${anuncios.hasNext()}">
-                <a class="page-link" th:href="@{/anuncioindexpag(page=${anuncios.number+1}, size=${anuncios.size}, titulopesquisa=${titulopesquisa}, categoriapesquisa=${categoriapesquisa})}">Próximo</a>
+                <a class="page-link" th:href="@{/anuncioindexpag(page=${anuncios.number+1}, size=${anuncios.size}, categoriapesquisa=${categoriapesquisa}, titulopesquisa=${titulopesquisa})}">Próximo</a>
             </li>
 
         </ul>

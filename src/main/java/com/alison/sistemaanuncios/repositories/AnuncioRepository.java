@@ -52,7 +52,8 @@ public interface AnuncioRepository extends JpaRepository<Anuncio, Long> {
 
         ExampleMatcher exampleMatcher = ExampleMatcher.matchingAny()
                 .withMatcher("titulo", ExampleMatcher.GenericPropertyMatchers.contains().ignoreCase())
-                .withMatcher("categoria", ExampleMatcher.GenericPropertyMatchers.contains().ignoreCase());
+                .withMatcher("categoria", ExampleMatcher.GenericPropertyMatchers.exact());
+
 
         Example<Anuncio> example = Example.of(anuncio, exampleMatcher);
 
