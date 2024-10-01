@@ -56,7 +56,7 @@
 
         <div class="col" th:each = "anuncio : ${anuncios}">
 
-            <div class="card" style="width: 17rem;">
+            <div class="card" style="width: 17rem;" th:onclick="|window.location.href='@{/detalhepag/{id}(id=${anuncio.id})}'|">
                 <img th:if="${anuncio.image != null}" th:src="@{/imagemanuncio/{idanun}(idanun=${anuncio.id})}" class="card-img-top" height="150px" width="180px" alt="user1">
                 <img th:if="${anuncio.image == null}"  src="" class="card-img-top" alt="user1" height="50px" width="50px">
 

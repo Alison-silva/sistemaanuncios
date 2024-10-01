@@ -44,22 +44,4 @@ public interface AnuncioRepository extends JpaRepository<Anuncio, Long> {
 
     }
 
-    default Page<Anuncio> findAnuncioBytituloandCategoriaPage(Categoria categoria, String titulo, Pageable pageable) {
-
-        Anuncio anuncio = new Anuncio();
-        anuncio.setCategoria(categoria);
-        anuncio.setTitulo(titulo);
-
-        ExampleMatcher exampleMatcher = ExampleMatcher.matchingAny()
-                .withMatcher("titulo", ExampleMatcher.GenericPropertyMatchers.contains().ignoreCase())
-                .withMatcher("categoria", ExampleMatcher.GenericPropertyMatchers.exact());
-
-
-        Example<Anuncio> example = Example.of(anuncio, exampleMatcher);
-
-        Page<Anuncio> anuncios = findAll(example, pageable);
-
-        return anuncios;
-    }
-
 }

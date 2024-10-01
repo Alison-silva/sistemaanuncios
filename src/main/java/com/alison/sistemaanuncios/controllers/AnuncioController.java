@@ -188,6 +188,15 @@ public class AnuncioController {
         return "redirect:/anuncio";
     }
 
+    @RequestMapping(method = RequestMethod.GET, value = "**/detalhepag/{id}")
+    public ModelAndView detalhepag(@PathVariable("id") Long id) {
+        Anuncio anuncio = anuncioRepository.findById(id).get();
+        ModelAndView model = new ModelAndView("detalhes");
+        model.addObject("anuncios", anuncio);
+        buscarUsuarioLogado();
+        model.addObject("usuario", usuario);
+        return model;
+    }
 
     private void buscarUsuarioLogado() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -196,6 +205,4 @@ public class AnuncioController {
             usuario = usuarioRepository.buscarUsuarioLogin(login).get(0);
         }
     }
-
-
 }

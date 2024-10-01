@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http//www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Sistema de anúncios</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <style>
+        <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            padding: 0;
+            text-align: center;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .image {
+            width: 100%;
+            height: auto;
+            margin-bottom: 20px;
+        }
+        .details {
+            text-align: left;
+        }
+        .details h1 {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+        .details p {
+            margin: 5px 0;
+        }
+    </style>
+</head>
+<body>
+<div th:replace="navbar :: navbar"></div>
+
+<br>
+
+<div class="container">
+    <div class="details" th:each="anuncio : ${anuncios}">
+        <h1><span th:text="${anuncio.titulo}"></span></h1>
+        <p><strong>Valor: </strong><span th:text="${#numbers.formatCurrency(anuncio.preco)}"></span></p>
+        <p><strong>Data da publicação: </strong><span th:text="${#dates.format(anuncio.timestamp, 'dd/MM/yyyy')}"></span></p>
+        <p><strong>Categoria: </strong> <span th:text="${anuncio.categoria.nomecategoria}"></span></p>
+        <p><strong>Anunciante: </strong><span th:text="${anuncio.usuario.nome}"></span></p>
+
+        <br>
+        <img th:if="${anuncio.image != null}" th:src="@{/imagemanuncio/{idanun}(idanun=${anuncio.id})}" alt="Imagem do Anúncio" class="image">
+        <img th:if="${anuncio.image == null}" alt="Imagem do Anúncio" class="image">
+        <div class="details">
+            <p><strong>Descrição: </strong><span th:text="${anuncio.descricao}"></span></p>
+        </div>
+    </div>
+</div>
+<br>
+<br>
+
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+</body>
+</html>
