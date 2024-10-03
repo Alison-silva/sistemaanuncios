@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http//www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Gerenciamento de anúncios</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+
+</head>
+<body>
+<div th:replace="navbar :: navbar"></div>
+
+<div class="container mt-5">
+
+
+    <h3 class="mt-5">Lista de Anúncios</h3>
+
+    <table class="table">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Imagem</th>
+            <th>Título</th>
+            <th>Categoria</th>
+            <th>Banir</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each = "anuncio : ${anuncios}">
+            <td th:text = "${anuncio.id}" ></td>
+            <td>
+                <img th:if="${anuncio.image != null}" th:src="@{/imageanuncio/{idanun}(idanun=${anuncio.id})}" class="avatar avatar-sm me-3" alt="user1" height="50px" width="50px">
+                <img th:if="${anuncio.image == null}" class="avatar avatar-sm me-3" alt="user1" height="50px" width="50px">
+            </td>
+            <td th:text = "${anuncio.titulo}" ></td>
+            <td th:text="${anuncio.categoria.nomecategoria}"></td>
+
+
+            <td><a th:if="${anuncio.ativo != false}">
+                <button type="button" class="btn btn-warning" onclick="return confirm('Deseja realmente banir esse anúncio?')">Banir</button></a>
+                <a th:if="${anuncio.ativo == false}">
+                    <button type="button" class="btn btn-danger" disabled>Banido</button></a>
+            </td>
+
+        </tr>
+        </tbody>
+    </table>
+    <br>
+    <nav aria-label="Page navigation example" style="margin-top: 30px;">
+        <ul class="pagination justify-content-center" th:if="${anuncios != null}">
+
+            <li class="page-item" th:if="${anuncios.hasPrevious()}" >
+                <a class="page-link" th:href="@{/gerenciapag(page=${anuncios.number-1}, size=${anuncios.size})}">Anterior</a>
+            </li>
+
+            <li class="page-item" th:each="i: ${#numbers.sequence(0, anuncios.totalPages - 1)}">
+                <a class="page-link" th:href="@{/gerenciapag(page=${i}, size=${anuncios.size})}">[[ ${i} + 1 ]]</a>
+            </li>
+
+            <li class="page-item" th:if="${anuncios.hasNext()}">
+                <a class="page-link" th:href="@{/gerenciapag(page=${anuncios.number+1}, size=${anuncios.size})}">Próximo</a>
+            </li>
+
+        </ul>
+    </nav>
+
+</div>
+
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+</body>
+</html>

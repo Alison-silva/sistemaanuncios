@@ -51,14 +51,14 @@ public class AnuncioController {
         ModelAndView model = new ModelAndView("index");
         buscarUsuarioLogado();
         model.addObject("categorias", categoriaRepository.findAll());
-        model.addObject("anuncios", anuncioRepository.findAll(PageRequest.of(0, 8, Sort.by("id"))));
+        model.addObject("anuncios", anuncioRepository.findByAtivoTrue(PageRequest.of(0, 8, Sort.by("id"))));
         model.addObject("usuario", usuario);
         return model;
     }
 
     @GetMapping("**/anuncioindexpag")
     public ModelAndView carregaAnunPorPaginacaoIndex(@PageableDefault(size = 8, sort = { "id" }) Pageable pageable,
-                                                     @RequestParam(value = "titulopesquisa", required = false) String titulopesquisa,
+                                                     @RequestParam("titulopesquisa") String titulopesquisa,
                                                      @RequestParam(value = "categoriapesquisa", required = false) Long id,
                                                      ModelAndView model) {
         Page<Anuncio> pageAnuncio;
@@ -79,11 +79,11 @@ public class AnuncioController {
         return model;
     }
 
-    @PostMapping("**/buscatitulo")
-    public ModelAndView buscatitulo(@RequestParam(value = "titulopesquisa", required = false) String titulopesquisa,
+    @PostMapping("/buscatitulo")
+    public ModelAndView buscatitulo(@RequestParam("titulopesquisa") String titulopesquisa,
                                     @PageableDefault(size = 8, sort = { "id" }) Pageable pageable) {
-        Page<Anuncio> anuncios = anuncioRepository.findAnuncioByTituloPage(titulopesquisa, pageable);
         ModelAndView model = new ModelAndView("index");
+        Page<Anuncio> anuncios = anuncioRepository.findAnuncioByTituloPage(titulopesquisa, pageable);
         model.addObject("categorias", categoriaRepository.findAll());
         model.addObject("anuncios", anuncios);
         model.addObject("titulopesquisa", titulopesquisa);
@@ -121,7 +121,7 @@ public class AnuncioController {
         return model;
     }
 
-    @GetMapping("/anunciopag")
+    @GetMapping("**/anunciopag")
     public ModelAndView carregaAnunPorPaginacao(@PageableDefault(size=5, sort = {"id"}) Pageable pageable,
                                                ModelAndView model) {
         Page<Anuncio> pageAnuncio = anuncioRepository.findAnuncioByUserId(usuario.getId(), pageable);
@@ -147,6 +147,7 @@ public class AnuncioController {
         }
         Date now = new Date();
         anuncio.setTimestamp(now);
+        anuncio.setAtivo(true);
         redirectAttributes.addFlashAttribute("usuario", usuario);
         anuncio.setUsuario(usuario);
         String msgok = new String("Registrado com sucesso!");

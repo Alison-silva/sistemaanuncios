@@ -42,6 +42,8 @@ public class Anuncio implements Serializable {
     @NotNull(message = "Preço não pode ser nulo!")
     private BigDecimal preco;
 
+    private boolean ativo;
+
     @ManyToOne
     private Usuario usuario;
 
@@ -109,5 +111,13 @@ public class Anuncio implements Serializable {
 
     public void setUsuario(Usuario usuario) {
         this.usuario = usuario;
+    }
+
+    public boolean isAtivo() {
+        return ativo;
+    }
+
+    public void setAtivo(boolean ativo) {
+        this.ativo = ativo;
     }
 }

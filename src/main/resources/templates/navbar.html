@@ -28,6 +28,7 @@
               <li sec:authorize="hasRole('ROLE_ADMIN')"><a class="dropdown-item" href="categoria">Cadastro de categoria</a></li>
               <li><a class="dropdown-item" href="anuncio">Cadastro de anúncios</a></li>
               <li sec:authorize="hasAnyRole('ROLE_ADMIN', 'ROLE_ANUNCIANTE')"><a class="dropdown-item" href="perfil">Perfil</a></li>
+              <li sec:authorize="hasRole('ROLE_ADMIN')"><a class="dropdown-item" href="gerenciamento">Gerenciamento de anúncios</a></li>
               <li><hr class="dropdown-divider"></li>
               <li sec:authorize="hasAnyRole('ROLE_ADMIN', 'ROLE_ANUNCIANTE')"><a class="dropdown-item" href="/logout">Sair</a></li>
             </ul>

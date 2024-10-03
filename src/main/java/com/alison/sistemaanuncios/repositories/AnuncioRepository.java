@@ -20,14 +20,18 @@ public interface AnuncioRepository extends JpaRepository<Anuncio, Long> {
     @Query("select a from Anuncio a where a.usuario.id = ?1")
     public List<Anuncio> getAnuncios(Long usuarioid);
 
+    Page<Anuncio> findByAtivoTrue(Pageable pageable);
+
     @Query(nativeQuery = true, value = "select * from anuncio where usuario_id = ?1 ")
     Page<Anuncio> findAnuncioByUserId(Long usuarioid, Pageable pageable);
 
-    default Page<Anuncio> findAnuncioByTituloPage(String titulo, Pageable pageable) {
+    default Page<Anuncio> findAnuncioByTituloPage(String titulo,  Pageable pageable) {
         Anuncio anuncio = new Anuncio();
         anuncio.setTitulo(titulo);
-        ExampleMatcher exampleMatcher = ExampleMatcher.matchingAny().withMatcher("titulo",
-                ExampleMatcher.GenericPropertyMatchers.contains().ignoreCase());
+        anuncio.setAtivo(true);
+        ExampleMatcher exampleMatcher = ExampleMatcher.matchingAll()
+                .withMatcher("titulo", ExampleMatcher.GenericPropertyMatchers.contains().ignoreCase())
+                .withMatcher("ativo", ExampleMatcher.GenericPropertyMatchers.exact());
         Example<Anuncio> example = Example.of(anuncio, exampleMatcher);
         Page<Anuncio> anuncios = findAll(example, pageable);
         return anuncios;
@@ -36,8 +40,10 @@ public interface AnuncioRepository extends JpaRepository<Anuncio, Long> {
     default Page<Anuncio> findAnuncioByCategoriaPage(Categoria categoria, Pageable pageable) {
         Anuncio anuncio = new Anuncio();
         anuncio.setCategoria(categoria);
-        ExampleMatcher exampleMatcher = ExampleMatcher.matchingAny().withMatcher("categoria",
-                ExampleMatcher.GenericPropertyMatchers.contains().ignoreCase());
+        anuncio.setAtivo(true);
+        ExampleMatcher exampleMatcher = ExampleMatcher.matchingAll()
+                .withMatcher("categoria", ExampleMatcher.GenericPropertyMatchers.contains().ignoreCase())
+                .withMatcher("ativo", ExampleMatcher.GenericPropertyMatchers.exact());
         Example<Anuncio> example = Example.of(anuncio, exampleMatcher);
         Page<Anuncio> anuncios = findAll(example, pageable);
         return anuncios;
