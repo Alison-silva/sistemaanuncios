@@ -80,32 +80,45 @@ public class AnuncioController {
     }
 
     @PostMapping("/buscatitulo")
-    public ModelAndView buscatitulo(@RequestParam("titulopesquisa") String titulopesquisa,
-                                    @PageableDefault(size = 8, sort = { "id" }) Pageable pageable) {
-        ModelAndView model = new ModelAndView("index");
+    public String buscatitulo(@RequestParam("titulopesquisa") String titulopesquisa,
+                              @PageableDefault(size = 8, sort = { "id" }) Pageable pageable,
+                              RedirectAttributes redirectAttributes) {
         Page<Anuncio> anuncios = anuncioRepository.findAnuncioByTituloPage(titulopesquisa, pageable);
-        model.addObject("categorias", categoriaRepository.findAll());
-        model.addObject("anuncios", anuncios);
-        model.addObject("titulopesquisa", titulopesquisa);
+        redirectAttributes.addFlashAttribute("categorias", categoriaRepository.findAll());
+        redirectAttributes.addFlashAttribute("anuncios", anuncios);
+        redirectAttributes.addFlashAttribute("titulopesquisa", titulopesquisa);
         buscarUsuarioLogado();
-        model.addObject("usuario", usuario);
+        redirectAttributes.addFlashAttribute("usuario", usuario);
+        return "redirect:/resultados";
+    }
+
+    @GetMapping("/resultados")
+    public ModelAndView mostrarResultados() {
+        ModelAndView model = new ModelAndView("index");
         return model;
     }
 
-    @PostMapping("**/buscacategoria")
-    public ModelAndView buscacategoria(@RequestParam(value = "categoriapesquisa", required = false) Long id,
-                                       @PageableDefault(size = 8, sort = { "id" }) Pageable pageable) {
-        ModelAndView model = new ModelAndView("index");
+
+    @PostMapping("/buscacategoria")
+    public String buscacategoria(@RequestParam(value = "categoriapesquisa", required = false) Long id,
+                                 @PageableDefault(size = 8, sort = { "id" }) Pageable pageable,
+                                 RedirectAttributes redirectAttributes) {
         Categoria categoria = null;
         if (id != null) {
             categoria = categoriaRepository.findById(id).orElse(null);
         }
         Page<Anuncio> anuncios = anuncioRepository.findAnuncioByCategoriaPage(categoria, pageable);
-        model.addObject("categorias", categoriaRepository.findAll());
-        model.addObject("anuncios", anuncios);
-        model.addObject("categoriapesquisa", id);
+        redirectAttributes.addFlashAttribute("categorias", categoriaRepository.findAll());
+        redirectAttributes.addFlashAttribute("anuncios", anuncios);
+        redirectAttributes.addFlashAttribute("categoriapesquisa", id);
         buscarUsuarioLogado();
-        model.addObject("usuario", usuario);
+        redirectAttributes.addFlashAttribute("usuario", usuario);
+        return "redirect:/resultadosCategoria";
+    }
+
+    @GetMapping("/resultadosCategoria")
+    public ModelAndView mostrarResultadosCategoria() {
+        ModelAndView model = new ModelAndView("index");
         return model;
     }
 
