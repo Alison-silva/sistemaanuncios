@@ -24,6 +24,7 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -82,45 +83,53 @@ public class AnuncioController {
     @PostMapping("/buscatitulo")
     public String buscatitulo(@RequestParam("titulopesquisa") String titulopesquisa,
                               @PageableDefault(size = 8, sort = { "id" }) Pageable pageable,
-                              RedirectAttributes redirectAttributes) {
+                              HttpSession session) {
         Page<Anuncio> anuncios = anuncioRepository.findAnuncioByTituloPage(titulopesquisa, pageable);
-        redirectAttributes.addFlashAttribute("categorias", categoriaRepository.findAll());
-        redirectAttributes.addFlashAttribute("anuncios", anuncios);
-        redirectAttributes.addFlashAttribute("titulopesquisa", titulopesquisa);
+        session.setAttribute("categorias", categoriaRepository.findAll());
+        session.setAttribute("anuncios", anuncios);
+        session.setAttribute("titulopesquisa", titulopesquisa);
         buscarUsuarioLogado();
-        redirectAttributes.addFlashAttribute("usuario", usuario);
+        session.setAttribute("usuario", usuario);
         return "redirect:/resultados";
     }
 
     @GetMapping("/resultados")
-    public ModelAndView mostrarResultados() {
+    public ModelAndView mostrarResultados(HttpSession session) {
         ModelAndView model = new ModelAndView("index");
+        model.addObject("categorias", session.getAttribute("categorias"));
+        model.addObject("anuncios", session.getAttribute("anuncios"));
+        model.addObject("titulopesquisa", session.getAttribute("titulopesquisa"));
+        model.addObject("usuario", session.getAttribute("usuario"));
         return model;
     }
-
 
     @PostMapping("/buscacategoria")
     public String buscacategoria(@RequestParam(value = "categoriapesquisa", required = false) Long id,
                                  @PageableDefault(size = 8, sort = { "id" }) Pageable pageable,
-                                 RedirectAttributes redirectAttributes) {
+                                 HttpSession session) {
         Categoria categoria = null;
         if (id != null) {
             categoria = categoriaRepository.findById(id).orElse(null);
         }
         Page<Anuncio> anuncios = anuncioRepository.findAnuncioByCategoriaPage(categoria, pageable);
-        redirectAttributes.addFlashAttribute("categorias", categoriaRepository.findAll());
-        redirectAttributes.addFlashAttribute("anuncios", anuncios);
-        redirectAttributes.addFlashAttribute("categoriapesquisa", id);
+        session.setAttribute("categorias", categoriaRepository.findAll());
+        session.setAttribute("anuncios", anuncios);
+        session.setAttribute("categoriapesquisa", id);
         buscarUsuarioLogado();
-        redirectAttributes.addFlashAttribute("usuario", usuario);
+        session.setAttribute("usuario", usuario);
         return "redirect:/resultadosCategoria";
     }
 
     @GetMapping("/resultadosCategoria")
-    public ModelAndView mostrarResultadosCategoria() {
+    public ModelAndView mostrarResultadosCategoria(HttpSession session) {
         ModelAndView model = new ModelAndView("index");
+        model.addObject("categorias", session.getAttribute("categorias"));
+        model.addObject("anuncios", session.getAttribute("anuncios"));
+        model.addObject("categoriapesquisa", session.getAttribute("categoriapesquisa"));
+        model.addObject("usuario", session.getAttribute("usuario"));
         return model;
     }
+
 
     @RequestMapping(method = RequestMethod.GET, value = "**/anuncio")
     public ModelAndView anuncio() {
@@ -148,7 +157,7 @@ public class AnuncioController {
     }
 
     @RequestMapping(method = RequestMethod.POST, value = "**/salvaranuncio", consumes = { "multipart/form-data" })
-    public String salvaranuncio(@Valid Anuncio anuncio, BindingResult bindingResult, final MultipartFile file, RedirectAttributes redirectAttributes) throws Exception {
+    public String salvaranuncio(@Valid Anuncio anuncio, final MultipartFile file, RedirectAttributes redirectAttributes) throws Exception {
         redirectAttributes.addFlashAttribute("anuncioobj", anuncio);
         if (file.getSize() > 0) {
             anuncio.setImage(file.getBytes());

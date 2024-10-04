@@ -37,7 +37,7 @@ public class UsuarioController {
     }
 
     @RequestMapping(method = RequestMethod.POST, value = "**/salvausuario")
-    public ModelAndView salvausuario(@Valid Usuario usuario, BindingResult bindingResult) throws Exception {
+    public ModelAndView salvausuario(@Valid Usuario usuario) throws Exception {
         ModelAndView model = new ModelAndView("login");
         String msgok = new String("Registrado com sucesso!");
         String senhacriptografada = new BCryptPasswordEncoder().encode(usuario.getSenha());

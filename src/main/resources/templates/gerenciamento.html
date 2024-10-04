@@ -36,8 +36,8 @@
             <td th:text="${anuncio.categoria.nomecategoria}"></td>
 
 
-            <td><a th:if="${anuncio.ativo != false}">
-                <button type="button" class="btn btn-warning" onclick="return confirm('Deseja realmente banir esse anúncio?')">Banir</button></a>
+            <td><a th:if="${anuncio.ativo != false}" th:href="@{gerenciaanun/{idanun}(idanun=${anuncio.id})}">
+                <button type="submit" class="btn btn-warning" onclick="return confirm('Deseja realmente banir esse anúncio?')">Banir</button></a>
                 <a th:if="${anuncio.ativo == false}">
                     <button type="button" class="btn btn-danger" disabled>Banido</button></a>
             </td>

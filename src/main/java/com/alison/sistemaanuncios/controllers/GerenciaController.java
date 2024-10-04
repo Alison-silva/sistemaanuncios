@@ -1,11 +1,11 @@
 package com.alison.sistemaanuncios.controllers;
 
 import com.alison.sistemaanuncios.model.Anuncio;
-import com.alison.sistemaanuncios.model.Categoria;
 import com.alison.sistemaanuncios.model.Usuario;
 import com.alison.sistemaanuncios.repositories.AnuncioRepository;
 import com.alison.sistemaanuncios.repositories.CategoriaRepository;
 import com.alison.sistemaanuncios.repositories.UsuarioRepository;
+import com.alison.sistemaanuncios.service.GerenciaService;
 import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.ByteArrayInputStream;
@@ -39,6 +40,9 @@ public class GerenciaController {
 
     @Autowired
     private AnuncioRepository anuncioRepository;
+
+    @Autowired
+    private GerenciaService gerenciaService;
 
     Usuario usuario = new Usuario();
 
@@ -69,6 +73,18 @@ public class GerenciaController {
         Anuncio anuncio = anuncioRepository.findById(idanun).get();
         InputStream is = new ByteArrayInputStream(anuncio.getImage());
         IOUtils.copy(is, response.getOutputStream());
+    }
+
+    @GetMapping("**/gerenciaanun/{idanun}")
+    public String gerenciaanun(@PathVariable("idanun") Long idanun, RedirectAttributes redirectAttributes) {
+
+        buscarUsuarioLogado();
+        Anuncio anuncio = anuncioRepository.findById(idanun).get();
+
+        gerenciaService.gerenciamentoAnuncio(anuncio.getId());
+        redirectAttributes.addFlashAttribute("anuncios", anuncioRepository.findAll(PageRequest.of(0, 8, Sort.by("id"))));
+        redirectAttributes.addFlashAttribute("usuario", usuario);
+        return "redirect:/gerenciamento";
     }
 
     private void buscarUsuarioLogado() {
