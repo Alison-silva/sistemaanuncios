@@ -2,9 +2,12 @@ package com.alison.sistemaanuncios.controllers;
 
 import com.alison.sistemaanuncios.model.Usuario;
 import com.alison.sistemaanuncios.repositories.AnuncioRepository;
+import com.alison.sistemaanuncios.repositories.CategoriaRepository;
 import com.alison.sistemaanuncios.repositories.UsuarioRepository;
 import com.alison.sistemaanuncios.service.ImplementationUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -24,6 +27,9 @@ public class UsuarioController {
 
     @Autowired
     private AnuncioRepository anuncioRepository;
+
+    @Autowired
+    private CategoriaRepository categoriaRepository;
 
     Usuario usuario = new Usuario();
 
@@ -74,8 +80,13 @@ public class UsuarioController {
             implementationUserDetailsService.insereAcessoPadrao(usuarioSalvo.getId());
         }
         ModelAndView model = new ModelAndView("index");
+        model.addObject("categorias", categoriaRepository.findAll());
+        model.addObject("anuncios", anuncioRepository.findByAtivoTrue(PageRequest.of(0, 8, Sort.by("id"))));
+        model.addObject("usuario", usuario);
         return model;
     }
+
+
 
     private void buscarUsuarioLogado() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();

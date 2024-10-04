@@ -17,7 +17,6 @@ import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
@@ -213,12 +212,17 @@ public class AnuncioController {
 
     @RequestMapping(method = RequestMethod.GET, value = "**/detalhepag/{id}")
     public ModelAndView detalhepag(@PathVariable("id") Long id) {
-        Anuncio anuncio = anuncioRepository.findById(id).get();
+        Anuncio anuncio = anuncioRepository.findById(id).orElse(null);
         ModelAndView model = new ModelAndView("detalhes");
         model.addObject("anuncios", anuncio);
         buscarUsuarioLogado();
         model.addObject("usuario", usuario);
         return model;
+    }
+
+    @RequestMapping(method = RequestMethod.GET, value = "/detalhepag/login")
+    public String login() {
+        return "login";
     }
 
     private void buscarUsuarioLogado() {

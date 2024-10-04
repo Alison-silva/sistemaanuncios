@@ -20,7 +20,7 @@
             <a class="nav-link active" aria-current="page" href="/">Home</a>
           </li>
 
-          <li class="nav-item dropdown">
+          <li class="nav-item dropdown" sec:authorize="isAuthenticated()">
             <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
               Menu
             </a>
@@ -36,6 +36,9 @@
         </ul>
       </div>
     </div>
+    <a class="navbar-brand" id="tar" sec:authorize="!isAuthenticated()" href="login" aria-expanded="false">
+      <button type="button" class="btn btn-primary">Faça seu Login</button>
+    </a>
     <a class="navbar-brand" id="tar" sec:authorize="isAuthenticated()" href="perfil" style="font-size: 14px;">
      <span>Seja bem-vindo </span> <span th:text="${ usuario.nome}"></span>
     </a>

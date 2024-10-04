@@ -47,7 +47,7 @@ public class GerenciaController {
     Usuario usuario = new Usuario();
 
 
-    @RequestMapping(method = RequestMethod.GET, value = "gerenciamento")
+    @RequestMapping(method = RequestMethod.GET, value = "**/gerenciamento")
     public ModelAndView gerenciamento() {
         ModelAndView model = new ModelAndView("gerenciamento");
         buscarUsuarioLogado();
@@ -56,7 +56,7 @@ public class GerenciaController {
         return model;
     }
 
-    @GetMapping("/gerenciapag")
+    @GetMapping("**/gerenciapag")
     public ModelAndView carregaAnunPorPaginacao(@PageableDefault(size=5, sort = {"id"}) Pageable pageable,
                                                ModelAndView model) {
         Page<Anuncio> pageAnun = anuncioRepository.findAll(pageable);
