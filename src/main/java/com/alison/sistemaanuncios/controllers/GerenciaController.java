@@ -2,10 +2,13 @@ package com.alison.sistemaanuncios.controllers;
 
 import com.alison.sistemaanuncios.model.Anuncio;
 import com.alison.sistemaanuncios.model.Usuario;
+import com.alison.sistemaanuncios.model.dto.AnuncioDTO;
 import com.alison.sistemaanuncios.repositories.AnuncioRepository;
 import com.alison.sistemaanuncios.repositories.CategoriaRepository;
 import com.alison.sistemaanuncios.repositories.UsuarioRepository;
 import com.alison.sistemaanuncios.service.GerenciaService;
+import com.alison.sistemaanuncios.service.RelatorioAnuncio;
+import com.alison.sistemaanuncios.service.ReportUtil;
 import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -24,10 +27,13 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 @Controller
 public class GerenciaController {
@@ -43,6 +49,12 @@ public class GerenciaController {
 
     @Autowired
     private GerenciaService gerenciaService;
+
+    @Autowired
+    private ReportUtil reportUtil;
+
+    @Autowired
+    private RelatorioAnuncio relatorioAnuncio;
 
     Usuario usuario = new Usuario();
 
@@ -85,6 +97,23 @@ public class GerenciaController {
         redirectAttributes.addFlashAttribute("anuncios", anuncioRepository.findAll(PageRequest.of(0, 8, Sort.by("id"))));
         redirectAttributes.addFlashAttribute("usuario", usuario);
         return "redirect:/gerenciamento";
+    }
+
+    @GetMapping("**/relatoriopdf")
+    public void imprimePdf(
+            HttpServletRequest request,
+            HttpServletResponse response) throws Exception {
+
+        List<AnuncioDTO> anuncioDTO = new ArrayList<AnuncioDTO>();
+        anuncioDTO = relatorioAnuncio.GerarRelaAnuncios();
+
+        byte[] pdf = reportUtil.gerarRelatorio(anuncioDTO,"relatorio-anuncio", request.getServletContext());
+        response.setContentLength(pdf.length);
+        response.setContentType("application/octet-stream");
+        String headerKey = "Content-Disposition";
+        String headerValue = String.format("attachment; filename=\"%s\"", "relatorio.pdf");
+        response.setHeader(headerKey, headerValue);
+        response.getOutputStream().write(pdf);
     }
 
     private void buscarUsuarioLogado() {
